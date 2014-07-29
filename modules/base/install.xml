@@ -1,0 +1,25 @@
+<?xml version="1.0"?>
+<?xml-stylesheet type="text/xsl" href="../module.xsl"?>
+<!DOCTYPE note [
+        <!ELEMENT note    (module_name,module_version,module_depend,module_provide,class_depend,class_provide,is_dev,author)>
+        <!ELEMENT module_name      (#PCDATA)>
+        <!ELEMENT module_version   (#PCDATA)>
+        <!ELEMENT module_depend (#PCDATA)>
+        <!ELEMENT module_provide    (#PCDATA)>
+        <!ELEMENT class_depend (#PCDATA)>
+        <!ELEMENT class_provide    (#PCDATA)>
+        <!ELEMENT is_dev (#PCDATA)>
+        <!ELEMENT author   (#PCDATA)>
+        <!ELEMENT is_optional  (#PCDATA)>
+        ]>
+<note>
+        <module_name> base </module_name>
+        <module_version>0.1 </module_version>
+        <module_depend>core </module_depend>
+        <module_provide>core</module_provide>
+        <class_depend>core</class_depend>
+        <class_provide>core</class_provide>
+        <is_dev>dev</is_dev>
+        <author> Morten Moesgaard</author>
+        <is_optional>0</is_optional>
+</note>

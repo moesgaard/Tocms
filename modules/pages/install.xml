@@ -1,0 +1,25 @@
+<?xml version="1.0"?>
+<?xml-stylesheet type="text/xsl" href="../module.xsl"?>
+<!DOCTYPE note [
+        <!ELEMENT note    (module_name,module_version,module_depend,module_provide,class_depend,class_provide,is_dev,author)>
+        <!ELEMENT module_name      (#PCDATA)>
+        <!ELEMENT module_version   (#PCDATA)>
+        <!ELEMENT module_depend (#PCDATA)>
+        <!ELEMENT module_provide    (#PCDATA)>
+        <!ELEMENT class_depend (#PCDATA)>
+        <!ELEMENT class_provide    (#PCDATA)>
+        <!ELEMENT is_dev (#PCDATA)>
+        <!ELEMENT author   (#PCDATA)>
+        <!ELEMENT is_optional  (#PCDATA)>
+        ]>
+<note>
+        <module_name> forum </module_name>
+        <module_version>0.1 </module_version>
+        <module_depend>core </module_depend>
+        <module_provide>mod_forum_class|mod_forum_layout|mod_forum_IM|mod_forum_email|forumn_admin_UI</module_provide>
+        <class_depend>core</class_depend>
+        <class_provide>forum_class_core|forum_class_layout|forum_class_IM|forum_class_email|forum_class_admin_UI</class_provide>
+        <is_dev>dev</is_dev>
+        <author> Morten Moesgaard</author>
+        <is_optional>1</is_optional>
+</note>

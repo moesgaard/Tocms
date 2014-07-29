@@ -1,0 +1,121 @@
+
+<div id="wrapper">
+{if $page == 'removenews'}
+{$content}
+{/if}
+        {if $decider == "true"}
+        <div id="top">
+            <div id="menu">  <ul>
+                  {section loop=$bodys name=loop }
+                <li class="current_page_item"><a href="{$bodys[loop].link}" >{$bodys[loop].name}</a></li>
+                {/section}
+        		</ul></div>
+        </div>
+        <div id="page">
+            </div>
+                {if $page eq ""}
+                <div id="content">
+                 <div id="fileuploader">
+           <p> Velkommen  til salgsagent administration
+           </p>
+           </div>
+           </div>   
+                {/if}
+    
+        {if $page eq "addusers"}
+        
+          
+           <div id="content">
+               <div id="fileuploader">
+                   <p>Tilf&oslash;j brugere til systemet</p>
+                   <form method="post" enctype="multipart/form-data">
+                       <p> <label> Fil til upload </label>  <input type="file" name="adduser" />
+                      </p><p>  <input type="submit" name="submit" value="Opdater systemet" />
+                      </p>  
+                   </form>
+               </div>
+         
+           </div>
+           {/if}
+       {if $page eq "addproduct"}
+          <div id="content"> 
+       <div id="fileuploader">
+                   <p>Tilf&oslash;j produkter til systemet</p>
+                   <form method="post" enctype="multipart/form-data">
+                       <p> <label> Fil til upload </label>  <input type="file" name="adduser" />
+                      </p><p>  <input type="submit" name="submit" value="Opdater systemet" />
+                      </p>  
+                   </form>
+               </div>
+          
+        
+           {$content}
+           </div>
+           {/if}
+       {if $page eq "addgroup"} <div id="content">
+         <div id="fileuploader">
+                   <p>Tilf&oslash;j produkt gruppe til systemet</p>
+                   <form method="post" enctype="multipart/form-data">
+                       <p>    <label> Fil til upload </label>  <input type="file" name="adduser" />
+                       </p><p> <input type="submit" name="submit" value="Opdater systemet" />
+                       </p> 
+                   </form>
+               </div>
+          
+          
+           {$content}
+           </div>
+           {/if}
+        {if $page eq "addnews"}
+         <div id="content">
+        <div id="fileuploader">
+     
+                   <p>Tilf&oslash;j nyheder til systemet</p> <br/>
+                   <form method="post" >
+                       <div class="contents">
+                           <input type="hidden" id="editid" name="editid" value=""/>
+                           <p><label> Nyheds Overskrift</label><input type="text" name="headline" value="" />
+                           </p>
+                           <p><label> Indhold af nyhed</label><textarea id="wysiwyg" name="content" > </textarea>
+                               <br/> <input type="submit" value="tilf&oslash;j nyhed"/>
+                       </p>   
+                       
+                       
+                       <div id="scrollbar1">
+	<div class="scrollbar"><div class="track"><div class="thumb"><div class="end"></div></div></div></div>
+	<div class="viewport">
+		<div class="overview">
+
+                       <ul class="userlist" >
+                        <li class="user_item"><input type="checkbox" class="selectuser" name="userselect[]" id="select-all"  value="all"/>Alle</li>
+                  {section loop=$users name=loop }
+                <li class="user_item"><input type="checkbox" class="selectuser" name="userselect[]" id="select-{$users[loop].id}"  value="{$users[loop].id}"/>{$users[loop].username}</li>
+                {/section}
+        		</ul>
+                </div></div></div>
+                       
+                       </div>
+                   </form>
+                     
+               </div>
+                <div id="scrollbar2">
+	<div class="scrollbar"><div class="track"><div class="thumb"><div class="end"></div></div></div></div>
+	<div class="viewport">
+		<div class="overview">
+          {$content}
+            </div></div></div>
+           </div>
+           {/if}
+      
+      {else}
+      <form id="login" action="/Login" method="post">
+      <fieldset id="fieldsLogin">
+       <p> <label>Brugernavn</label>   <input type="text" value="" name="username" />  </p>
+     <p> <label>Kodeord</label>      <input type="password" value="" name="password" /></p> 
+     <p><input type="submit" value="Log Ind:"/></p>
+      </fieldset>
+        </form>
+            {/if}
+            </div>
+
+          <div id="btm"></div>
