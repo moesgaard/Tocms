@@ -21,7 +21,6 @@ class note {
                         $result .=  ' </br> Mainsection found it is'.$value;
                     }else {
                         $result .=  ' </br> Subsection found it is'.$value;
-
                     }
                 }else {
                 }

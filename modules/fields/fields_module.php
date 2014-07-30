@@ -19,7 +19,6 @@ class fields extends html_class {
          */
     }
     public function fields($array){
-
         foreach( $array as $key){
             $result .= $this->fieldType($key);
         }
@@ -31,9 +30,7 @@ class fields extends html_class {
         $result ='';
         if(!empty($array)){
             foreach($array as $key){
-
                 if(!empty($key)){
-
                     $preresult[$i]['content'] = $this->fieldType($key);
                     if(isset($key['list'])){
                         if(isset($key['list']['tagid'])){
@@ -48,9 +45,7 @@ class fields extends html_class {
                     }
                     $i++;
                 }
-
             }
-
         }
         foreach($preresult as $keys => $value){
             $result  .= $this->html->lists($value);
@@ -59,7 +54,6 @@ class fields extends html_class {
         $results['content'] = $result;
         return $this->html->ul($results);
     }
-
     public function fieldType($array = array('type','description','method')) {
         /**
          * this Method is for creating  different types of  fields for forms and other tags
@@ -68,7 +62,6 @@ class fields extends html_class {
          */
         // print_r($array);
         $araays = $array;
-
         switch($array["type"]) {
         case "input":
             return $this->html->inputField($array);
@@ -86,7 +79,6 @@ class fields extends html_class {
             return $this->html->form($array,'',$array['method']);
             break;
         }
-
     }
     public function userLoginFormFields($page) {
         /**
@@ -94,8 +86,6 @@ class fields extends html_class {
          */
     }
     function __destruct() {
-
     }
 }
-
 ?>
