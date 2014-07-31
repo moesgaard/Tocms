@@ -1,5 +1,6 @@
 <?php
 /**
+ * @core true
  * @package modulereader
  */
 /* * modules_class

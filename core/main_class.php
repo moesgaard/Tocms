@@ -1,5 +1,6 @@
 <?php
 /**
+ * @core true
  * @package class
  * @subpackage main
  * @author Morten Moesgaard

@@ -5,8 +5,7 @@
  */
 
 /**
- * Description of group_class
- *
+ * @core true
  * @author moesgaard
  */
 class group_class {

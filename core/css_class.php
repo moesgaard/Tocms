@@ -1,12 +1,7 @@
 <?php
 /**
- *@package class
- */
-/**
- *This is the class for  the css
- */
-/**
- *@package class
+ * @core true;
+ * @package class
  */
 class css_class{
     private $cssArray;

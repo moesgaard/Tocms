@@ -11,8 +11,7 @@
  */
 
 /**
- * Description of content_create_interface
- *
+ * @core true
  * @author moesgaard
  */
 class content_create_interface {

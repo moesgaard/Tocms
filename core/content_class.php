@@ -1,7 +1,8 @@
 <?php
 /**
- *@package coresystem
- *@subpackage content
+ * @core true
+ * @package coresystem
+ * @subpackage content
  */
 /**
  *this is the content class where all the content is drawn from
@@ -27,12 +28,12 @@ class content_class {
         global $db,$html,$setup,$forum,$standard,$node,$module;
         $this->htmls = $html;
         // we fetch the menu that is controlled from the admin menu.
-        $this->data = $db->getArray('tocms_menu:',
-            "id,name,is_main_menu,main_menu_position:",
+    /*    $this->data = $db->getArray('tocms_menu:',
+          "id,name,is_main_menu,main_menu_position:",
             " 0.2 = 1 ",
             " order  0.3  ASC");
         print_r($this->data);
-        $this->connection = $module->moduleSendInformation();
+      */  $this->connection = $module->moduleSendInformation();
         if(!is_array($this->data)) {
             $this->__destruct();
         }
@@ -61,7 +62,6 @@ class content_class {
         return nl2br($this->sidebar);
     }
     public function arraytoMenu($dataArray,$vertical = 0) {
-        global $db,$html,$setup,$forum,$standard;
         $this->menus = "";
         if($vertical == 0) {
             $splitter = $this->htmls->breaker();

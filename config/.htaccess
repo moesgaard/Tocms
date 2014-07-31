@@ -1,0 +1,4 @@
+options +FollowSymLinks
+RewriteEngine on
+RewriteRule /config/(.*) http://www.nytdomain.com/( [R=301,L])
+

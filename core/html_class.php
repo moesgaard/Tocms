@@ -1,5 +1,6 @@
 <?php
 /**
+ * @core true
  * @package coresystem
  * @subpackage HTML
  * @author Morten Moesgaard
@@ -19,7 +20,22 @@ class html_class{
     private $options;
     public $t;
     function __construct() {
-      $this->t = new translate_class();
+    }
+    function meta($value){
+        return "<meta />";
+    }
+    function css ($value){
+        return '<link type="text/css" rel="stylesheet" media="'.$value["media"].'" href="'.$value['src'].'" />';
+
+    }
+
+    function script($value){
+               if($value['src'] != '' ){
+                $script = '<script type="javascript" src="'.$value["src"].'"></script>';
+                }else{
+                 $script = '<script type="javascript">'.$value['code'].'</script>';
+                }
+  return $script;
     }
     function arraysplit($tagid = '') {
         $taged = '';
@@ -46,7 +62,7 @@ class html_class{
         if(!isset($array['script'])){
            $array['script'] = '';
         }
-        return '<div '.$array['id'].' '.$array['class'].' '.$array['script'].'>'.$this->t->translate($array['content']).'</div>';
+        return '<div '.$array['id'].' '.$array['class'].' '.$array['script'].'>'._($array['content']).'</div>';
     }
     function image($array) {
          if(!isset($array['tagid'])){
@@ -167,7 +183,7 @@ class html_class{
         if(!isset($array['script'])){
            $array['script'] = '';
         }
-        return '<a href="'.$array['src'].'"'.'  '.$array['tagid'].' '.$array['class'].' '.$array['script'].'>'.$array['content'].'</a>';
+        return '<a href="'.$array['src'].'"'.'  '.$array['tagid'].' '.$array['class'].' '.$array['script'].'>'.__($array['content']).'</a>';
     }
     function pre($array) {
          if(!isset($array['tagid'])){
@@ -180,7 +196,7 @@ class html_class{
            $array['script'] = '';
         }
         if(!empty($array['content'])) {
-            return "<pre ".$array['tagid']."> ".$array['content']."</pre>";
+            return "<pre ".$array['tagid']."> ".__($array['content'])."</pre>";
         }
     }
     function ul($array) {
@@ -206,32 +222,32 @@ class html_class{
         if(!isset($array['script'])){
            $array['script'] = '';
         }
-              return '<select '.''.$array['tagid'].''.$array['class'].''.$array['script'].'>'.self::option($array['content']).'</select>';
+              return '<select '.''.$array['tagid'].''.$array['class'].''.$array['script'].'>'.$this->option($array['content']).'</select>';
     }
     function option($array) {
               if(!empty($array)){
                  foreach($array as $key => $value ) {
-             $this->options .= "<option value=\"$key\">$value</option>";
+             $this->options .= "<option value=\"$key\">".__($value)."</option>";
             }
         }
         return $this->options;
     }
     function description($description) {
         if(!empty($description)) {
-            return self::pre($description['ident'], $description['content']);
+            return $this->pre($description['ident'], $description['content']);
         }else {
             return;
         }
     }
     function label($info) {
         if(!empty($info)) {
-            return "<label for=".$info['for']." >".$info['content']."</label>";
+            return "<label for=".$info['for']." >".__($info['content'])."</label>";
         }else {
             return ;
         }
     }
     function input($array) {
-        return self::label($array['label']).'<input '.$array['content'].' />'.self::description($array['description']);
+        return $this->label($array['label']).'<input '.$array['content'].' />'.$this->description($array['description']);
     }
     function inputField($array) {
         $info = " type=\"".$array['type']."\" ";
@@ -240,14 +256,14 @@ class html_class{
                 $info .= " $key=\"$value\" ";
         }
         $array['content'] = $info;
-        return self::input($array);
+        return $this->input($array);
     }
     function hiddenField() {
 
     }
     function form($array,$type ,$method="POST") {
         if(preg_match("/submit/", $array['content']) == 0) {
-            $array['content'] .= self::inputField( array('label'=> '','description'=>'','content'=>'','type'=> 'submit','input' => array( 'name'=>'submit', 'value'=> 'submit')));
+            $array['content'] .= $this->inputField( array('label'=> '','description'=>'','content'=>'','type'=> 'submit','input' => array( 'name'=>'submit', 'value'=> 'submit')));
         }
       
         if(empty($method) == 0) {
@@ -258,4 +274,5 @@ class html_class{
     function __destruct() {
     }
 }
+$html = new html_class();
 ?>

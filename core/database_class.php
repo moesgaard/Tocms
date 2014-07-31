@@ -1,13 +1,10 @@
 <?php
 /**
- *@package coresystem
- *@subpackage database
- */
-/**
- *this is the database class for connectiont
+ * this is the database class for connectiont
  * this database  uses the database_interface ads guide line
  */
 /**
+ * @core true
  * @package coresystem
  * @subpackage database
  * @author Morten Moesgaard - Moesgaards.dk
@@ -127,9 +124,9 @@ class database_class{
     private $solution;
     function __construct() {
         /**
-         *This is the constructor for the class where the config.php file is created via a gpg command
+         *This is the constructor for the class where the config.php file is read and databse connection is being made 
          */
-        require_once('db/config.php');
+        require_once('config/config.php');
         $this->__connect();
     }
     function __connect($DatabaseSelection = 0 , $DatabaseSelectionSecond = 0) {
@@ -137,10 +134,11 @@ class database_class{
          *This is the main connect function where the variables from  the config.php  is being used.
          * here we test the first/primary connection
          **/
-        switch($this->handle['Primary'][0]) {
+        switch($this->handle['primaryconnection']['Primary']) {
         case "mysql":
             try {
-                $this->connection = $this->__construct_mysql($DatabaseSelection);
+                $mykey = $this->handle['primaryconnection'];
+                $this->connection = $this->__construct_mysql($mykey);
                 $this->PrimaryConnection = "mysql";
             }catch(Exception $e ) {
                 logErrors::write($e->getMessage(),1);
@@ -149,7 +147,8 @@ class database_class{
             break;
         case "pgsql":
             try {
-                $this->connection = $this->__construct_pgsql($DatabaseSelection) ;
+                $mykey = $this->handle['primaryconnection'];
+                $this->connection = $this->__construct_pgsql($mykey) ;
                 $this->PrimaryConnection = "pgsql";
             }catch(Exception $e ) {
                 logErrors::write($e->getMessage(),1);
@@ -158,7 +157,8 @@ class database_class{
             break;
         case "oci":
             try {
-                $this->connection = $this->__construct_oci($DatabaseSelection);
+                $mykey = $this->handle['primaryconnection'];
+                $this->connection = $this->__construct_oci($mykey);
                 $this->PrimaryConnection = "oci";
             }catch(Exception $e ) {
                 logErrors::write($e->getMessage(),1);
@@ -167,7 +167,8 @@ class database_class{
             break;
         case "pdo_mysql":
             try {
-                $this->connection = $this->__construct_pdo_mysql($DatabaseSelection);
+                $mykey = $this->handle['primaryconnection'];
+                $this->connection = $this->__construct_pdo_mysql($mykey);
                 $this->PrimaryConnection ="pdo_mysql";
             }catch(Exception $e ) {
                 logErrors::write($e->getMessage(),1);
@@ -176,7 +177,8 @@ class database_class{
             break;
         case "pdo_pgsql":
             try {
-                $this->connection = $this->__construct_pdo_pgsql($DatabaseSelection);
+                $mykey = $this->handle['primaryconnection'];
+                $this->connection = $this->__construct_pdo_pgsql($mykey);
                 $this->PrimaryConnection ="pdo_pgsql";
             }catch(Exception $e ) {
                 logErrors::write($e->getMessage(),1);
@@ -185,7 +187,8 @@ class database_class{
             break;
         case "xml":
             try {
-                $this->connection = $this->__construct_xml($DatabaseSelection);
+                $mykey = $this->handle['primaryconnection'];
+                $this->connection = $this->__construct_xml($mykey);
                 $this->PrimaryConnection = "xml";
             }catch(Exception $e ) {
                 logErrors::write($e->getMessage(),1);
@@ -195,118 +198,21 @@ class database_class{
         default:
             break;
         }
-        /**
-         *here we try the secondary connection
-         */
-        if(isset($this->handle['Secondary'][0]) && !empty($this->handle['Secondary'][0])) {
-            switch($this->handle['Secondary'][0]) {
-            case "mysql":
-                try {
-                    $this->connectionBackup = $this->__construct_mysql($DatabaseSelectionSecond);
-                    $this->BackupConnection ="mysql";
-                }catch(Exception $e ) {
-                    logErrors::write($e->getMessage(),1);
-                    $this->failoverSecond = 1;
-                }
-                break;
-            case "pgsql":
-                try {
-                    $this->connectionBackup = $this->__construct_pgsql( $DatabaseSelectionSecond);
-                    $this->BackupConnection ="pgsql";
-                }catch(Exception $e ) {
-                    logErrors::write($e->getMessage(),1);
-                    $this->failoverSecond = 1;
-                }
-                break;
-            case "oci":
-                try {
-                    $this->connectionBackup = $this->__construct_oci( $DatabaseSelectionSecond);
-                    $this->BackupConnection ="oci";
-                }catch(Exception $e ) {
-                    logErrors::write($e->getMessage(),1);
-                    $this->failoverSecond = 1;
-                }
-                break;
-            case "pdo_mysql":
-                try {
-                    $this->connectionBackup = $this->__construct_pdo_mysql($DatabaseSelectionSecond);
-                    $this->BackupConnection ="pdo_mysql";
-                }catch(Exception $e ) {
-                    logErrors::write($e->getMessage(),1);
-                    $this->failoverSecond = 1;
-                }
-                break;
-            case "pdo_pgsql":
-                try {
-                    $this->connectionBackup = $this->__construct_pdo_mysql($DatabaseSelectionSecond);
-                    $this->BackupConnection ="pdo_mysql";
-                }catch(Exception $e ) {
-                    logErrors::write($e->getMessage(),1);
-                    $this->failoverSecond = 1;
-                }
-                break;
-            case "xml":
-                try {
-                    $this->connectionBackup = $this->__construct_xml($DatabaseSelection);
-                    $this->BackupConnection ="xml";
-                }catch(Exception $e ) {
-                    logErrors::write($e->getMessage(),1);
-                    $this->failoverSecond = 1;
-                }
-                break;
-            default:
-                break;
-            }
-        }else {
-            $this->handle['Secondary'][0] = "";
-        }
-        /**
-         * Now we try and see if the failover is set if not this is ignored
-         */
-        if($this->failover == true) {
-            $this->connection = $this->connectionBackup;
-            $this->PrimaryConnection = $this->BackupConnection;
-            if($this->PrimaryConnection == "" ) {
-                $this->failoverSecond = true;
-            }
-        }
-        /**
-         *we try and see if the secondary has failed
-         */
-        if($this->failoverSecond == true) {
-            try {
-                $this->connection = $this->__construct_xml($DatabaseSelection);
-                $this->PrimaryConnection = "xml";
-                $this->databaseName = $this->handle[''.$this->handle["Primary"][0].'_Database'][0];
-            }catch(Exception $e ) {
-                logErrors::write($e->getMessage(),1);
-                die(nl2br('The system is not set up properly..Please do so!
-                    You only recieve this message due to xml is not found on your system
-                    or the databases are not set up properly..
-                    if this is first time running please go to setup with the required key recieved by email '));
-            }
-        }
-        /**
-         * We return the connection that is used
-         */
         return $this->connection;
     }
-  /**
-   function __set($property,$value) {
-   }
-  **/
     /**
      *Constructors start  ( mysql,xml, pgsql,oracle,pdo for  mysql and pgsql)
      */
-    function __construct_mysql($h = false ) {
-        $this->connections = @mysql_connect($this->handle['mysql_Host'][$h],$this->handle['mysql_User'][$h],$this->handle['mysql_Password'][$h]);
-        $this->connect =@mysql_select_db($this->handle['mysql_Database'][$h],$this->connections);
+    function __construct_mysql($info) {
+        $this->connections = @mysql_connect($info['host'],$info['user'],$info['password']);
+        $this->connect =@mysql_select_db($info['database'],$this->connections);
         if(@mysql_error()) {
             throw new Exception('Mysql is down or you are using another Database . \n  The report is :'.mysql_error().' \n please untick MySql if not in use  ');
         }else {
             return $this->connect;
         }
     }
+    /*
     function __construct_mssql(){
         $this->connections = mssql_connect($servername, $username, $password, $new_link);
         $this->connect = mssql_select_db($database_name, $link_identifier);
@@ -315,8 +221,8 @@ class database_class{
         }else {
             return $this->connect;
         }
-    }
-    function __construct_xml($h = false) {
+    }*/
+    function __construct_xml() {
         $this->connect = is_dir("db/xml");
         if($this->connect == false) {
             throw new Exception('xml is not working ');
@@ -324,6 +230,7 @@ class database_class{
             return $this->connect;
         }
     }
+    /*
     function __construct_pgsql($h = false) {
         $this->connect = @pg_connect($this->handle['pgsql_Connection'][$h]);
         if(!$this->connect) {
@@ -331,12 +238,12 @@ class database_class{
         }else {
             return $this->connect;
         }
-    }
-    function __construct_oci($h = false) {
+    }*/
+    function __construct_oci($info) {
         $this->connect = @oci_connect(
-            $this->handle['oci_User'][$h],
-            $this->handle['oci_Password'][$h],
-            $this->handle['oci_Host'][$h]."/".$this->handle['oci_Database'][$h]);
+            $info['user'],
+            $info['password'],
+            $info['host']."/".$info['database']);
         $error = oci_error();
         if(!empty($error)) {
             $message = "";
@@ -349,46 +256,46 @@ class database_class{
             return $this->connect;
         }
     }
-    function __construct_pdo_mysql($h = false) {
+    function __construct_pdo_mysql($info) {
         try {
-            $this->dns = "mysql:dbname=".$this->handle['pdo_mysql_Database'][$h]."; host=".$this->handle['pdo_mysql_Host'][$h]."";
-            $this->connect = new PDO($this->dns,$this->handle['pdo_mysql_User'][$h],$this->handle['pdo_mysql_Password'][$h],array(PDO::MYSQL_ATTR_USE_BUFFERED_QUERY => true));
+            $this->dns = "mysql:dbname=".$info['database']."; host=".$info['host']."";
+            $this->connect = new PDO($this->dns,$info['user'],$info['password'],array(PDO::MYSQL_ATTR_USE_BUFFERED_QUERY => true));
             $this->connect->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
         }catch(PDOException $ne ) {
             throw new Exception('Mysql database via pdo is down or you are using another Database . \n  The report is :'.$ne->getMessage().' \n please untick pdo_Mysql if not in use  ');
         }
         return $this->connect;
-    }
-    function __construct_pdo_pgsql($h = 0) {
-        try {
-            $this->dns = "pgsql:dbname=".$this->handle['pdo_pgsql_Database'][$h]."; port=5432; host=".$this->handle['pdo_mysql_Host'][$h].";";
-            $this->connect = new PDO($this->dns,$this->handle['pdo_pgsql_User'][$h],$this->handle['pdo_pgsql_Password'][$h]);
-            $this->connect->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-        }catch(PDOException $ne ) {
-            throw new Exception('Postgres datbase via pdo is down or you are using another Database . \n  The report is :'.$ne->getMessage().' \n please untick pdo_Postgress if not in use  ');
-        }
-        return $this->connect;
-    }
-    /**
-     *Construtors end.
-     */
-    /**
-     * This section above will be  extended when
-     * the database for selection is made
-     * */
-    /**
-     *This method explodes the tables
-     */
-    function tablesExploded($tables) {
-        $this->explosion = explode(":",$tables);
-        $this->query = "";
-        foreach($this->explosion as $key => $value ) {
-            if($value != "" ) {
-                $this->query[$key] =  $value;
+    }/*
+        function __construct_pdo_pgsql($h = 0) {
+            try {
+                $this->dns = "pgsql:dbname=".$this->handle['pdo_pgsql_Database'][$h]."; port=5432; host=".$this->handle['pdo_mysql_Host'][$h].";";
+                $this->connect = new PDO($this->dns,$this->handle['pdo_pgsql_User'][$h],$this->handle['pdo_pgsql_Password'][$h]);
+                $this->connect->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+}catch(PDOException $ne ) {
+    throw new Exception('Postgres datbase via pdo is down or you are using another Database . \n  The report is :'.$ne->getMessage().' \n please untick pdo_Postgress if not in use  ');
+}
+return $this->connect;
+}*/
+        /**
+         *Construtors end.
+         */
+        /**
+         * This section above will be extended when
+         * the database for selection is made
+         * */
+        /**
+         *This method explodes the tables
+         */
+        function tablesExploded($tables) {
+            $this->explosion = explode(":",$tables);
+            $this->query = "";
+            foreach($this->explosion as $key => $value ) {
+                if($value != "" ) {
+                    $this->query[$key] =  $value;
+                }
             }
+            return $this->query;
         }
-        return $this->query;
-    }
     /**
      *this method explodes the fields
      */
@@ -407,7 +314,7 @@ class database_class{
         $this->explosion = explode(":",$fields);
         $this->query = "";
         foreach($this->explosion as $key => $value ) {
-            $this->query[$key] =  explode(",",$value);
+            $this->query[$key] = explode(",",$value);
         }
         return $this->query;
     }
@@ -468,7 +375,7 @@ class database_class{
         if($debug == false ) {
             return $this->query;
         }else {
-            $this->query;
+            echo $this->query;
         }
     }
     /**
@@ -555,21 +462,20 @@ class database_class{
                 $this->selecttable .= $this->tables[$i]." ";
             }elseif($i == 0 && count($this->tables)  > 0 ){
                 $this->selecttable = $this->tables[$i].", ";
-
             }elseif(!empty($this->tables[$i])) {
                 $this->selecttable .= $this->tables[$i].",";
             }
 
             for($n=0;$n < count($this->fields[$i]); $n++) {
-                $this->pattern[] = "/\b".$i."[[:punct:]]".$n."\b/";
-                $this->replace[] = $this->tables[$i].".".$this->fields[$i][$n];
+                $this->pattern[] = "/ \b".$i."[[:punct:]]".$n."\b /";
+                $this->replace[] =" ".$this->tables[$i].".".$this->fields[$i][$n]." ";
                 if($i ==  count($this->tables)-1 && $n == count($this->fields[$i])-1) {
-                    $this->selection .= $this->tables[$i].".".$this->fields[$i][$n]."";
+                    $this->selection .= " ".$this->tables[$i].".".$this->fields[$i][$n]." ";
                 }else {
                     if(count($this->tables) == 1 &&  $n == count($this->fields[$i])-1 ) {
-                        $this->selection .= $this->tables[$i].".".$this->fields[$i][$n]."";
+                        $this->selection .= " ".$this->tables[$i].".".$this->fields[$i][$n]." ";
                     }else {
-                        $this->selection .= $this->tables[$i].".".$this->fields[$i][$n].",";
+                        $this->selection .= " ".$this->tables[$i].".".$this->fields[$i][$n].",";
                     }
                 }
             }
@@ -648,7 +554,7 @@ class database_class{
      *a key generation for later use
      */
     function keyselect($keys) {
-        $values = "abcdefghijklmnopqrstuvwyzx";
+        $values = "abcdefghijklmnopqrstuvwyzxABCDEFGHIJKLMNOPQRSTUVWYZX1234567890";
         $this->validkey = $values{$keys};
         return $this->validkey;
     }
